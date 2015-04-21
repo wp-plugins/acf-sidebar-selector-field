@@ -1,25 +1,40 @@
 <?php
+/**
+ * ACF 5 Field Class
+ *
+ * This file holds the class required for our field to work with ACF 5
+ *
+ * @author Daniel Pataki
+ * @since 3.0.0
+ *
+ */
+
+/**
+ * ACF 5 Sidebar Selector Class
+ *
+ * The role selector class enables users to select sidebars. This is
+ * the class that is used for ACF 5.
+ *
+ * @author Daniel Pataki
+ * @since 3.0.0
+ *
+ */
 
 class acf_field_sidebar_selector extends acf_field {
 
-
-	/*
-	*  __construct
-	*
-	*  This function will setup the field type data
-	*
-	*  @type	function
-	*  @date	5/03/2014
-	*  @since	5.0.0
-	*
-	*  @param	n/a
-	*  @return	n/a
-	*/
-
+	/**
+	 * Field Constructor
+	 *
+	 * Sets basic properties and runs the parent constructor
+	 *
+	 * @author Daniel Pataki
+	 * @since 3.0.0
+	 *
+	 */
 	function __construct() {
 
 		$this->name = 'sidebar_selector';
-		$this->label = __( 'Sidebar Selector', 'acf' );
+		$this->label = __( 'Sidebar Selector', 'acf-sidebar-selector-field' );
 		$this->category = __( "Choice",'acf' );
 		$this->defaults = array(
 			'allow_null' => '1',
@@ -31,44 +46,36 @@ class acf_field_sidebar_selector extends acf_field {
 	}
 
 
-	/*
-	*  render_field_settings()
-	*
-	*  Create extra settings for your field. These are visible when editing a field
-	*
-	*  @type	action
-	*  @since	3.6
-	*  @date	23/01/13
-	*
-	*  @param	$field (array) the $field being edited
-	*  @return	n/a
-	*/
-
+	/**
+	 * Field Options
+	 *
+	 * Creates the options for the field, they are shown when the user
+	 * creates a field in the back-end. Currently there are two fields.
+	 *
+	 * Allowing null determines if the user is allowed to select no sidebars
+	 *
+	 * The default value can set the dropdown to a pre-set value when loaded
+	 *
+	 * @param array $field The details of this field
+	 * @author Daniel Pataki
+	 * @since 3.0.0
+	 *
+	 */
 	function render_field_settings( $field ) {
 
-		/*
-		*  acf_render_field_setting
-		*
-		*  This function will create a setting for your field. Simply pass the $field parameter and an array of field settings.
-		*  The array of settings does not require a `value` or `prefix`; These settings are found from the $field array.
-		*
-		*  More than one setting can be added by copy/paste the above code.
-		*  Please note that you must also have a matching $defaults value for the field name (font_size)
-		*/
-
 		acf_render_field_setting( $field, array(
-			'label'			=> __('Allow Null?','acf-sidebar_selector'),
+			'label'			=> __('Allow Null?','acf-sidebar-selector-field'),
 			'type'			=> 'radio',
 			'name'			=> 'allow_null',
 			'layout'  =>  'horizontal',
 			'choices' =>  array(
-				'1' => __('Yes', 'acf'),
-				'0' => __('No', 'acf'),
+				'1' => __('Yes', 'acf-sidebar-selector-field'),
+				'0' => __('No', 'acf-sidebar-selector-field'),
 			)
 		));
 
 		acf_render_field_setting( $field, array(
-			'label'			=> __('Default Value','acf-sidebar_selector'),
+			'label'			=> __('Default Value','acf-sidebar-selector-field'),
 			'type'			=> 'text',
 			'name'			=> 'default_value',
 		));
@@ -78,24 +85,19 @@ class acf_field_sidebar_selector extends acf_field {
 
 
 
-	/*
-	*  render_field()
-	*
-	*  Create the HTML interface for your field
-	*
-	*  @param	$field (array) the $field being rendered
-	*
-	*  @type	action
-	*  @since	3.6
-	*  @date	23/01/13
-	*
-	*  @param	$field (array) the $field being edited
-	*  @return	n/a
-	*/
-
+	/**
+	 * Field Display
+	 *
+	 * This function takes care of displaying our field to the users, taking
+	 * the field options into account.
+	 *
+	 * @param array $field The details of this field
+	 * @author Daniel Pataki
+	 * @since 3.0.0
+	 *
+	 */
 	function render_field( $field ) {
-
-
+		global $wp_registered_sidebars;
 		?>
 		<div>
 			<select name='<?php echo $field['name'] ?>'>

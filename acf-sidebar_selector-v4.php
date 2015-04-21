@@ -1,26 +1,43 @@
 <?php
+/**
+ * ACF 4 Field Class
+ *
+ * This file holds the class required for our field to work with ACF 4
+ *
+ * @author Daniel Pataki
+ * @since 3.0.0
+ *
+ */
 
-class acf_field_sidebar_selector extends acf_field
-{
-	// vars
-	var $settings, // will hold info such as dir / path
-		$defaults; // will hold default field options
+/**
+ * ACF 4 Sidebar Selector Class
+ *
+ * The role selector class enables users to select sidebars. This is the class
+ * that is used for ACF 4.
+ *
+ * @author Daniel Pataki
+ * @since 3.0.0
+ *
+ */
+
+class acf_field_sidebar_selector extends acf_field {
+	var $settings;
+	var $defaults;
 
 
-	/*
-	*  __construct
-	*
-	*  Set name / label needed for actions / filters
-	*
-	*  @since	3.6
-	*  @date	23/01/13
-	*/
+	/**
+	 * Field Constructor
+	 *
+	 * Sets basic properties and runs the parent constructor
+	 *
+	 * @author Daniel Pataki
+	 * @since 3.0.0
+	 *
+	 */
+	function __construct() {
 
-	function __construct()
-	{
-		// vars
 		$this->name = 'sidebar_selector';
-		$this->label = __( 'Sidebar Selector', 'acf' );
+		$this->label = __( 'Sidebar Selector', 'acf-sidebar-selector-field' );
 		$this->category = __( "Choice",'acf' );
 		$this->defaults = array(
 			'allow_null' => '1',
@@ -28,11 +45,9 @@ class acf_field_sidebar_selector extends acf_field
 		);
 
 
-		// do not delete!
-    parent::__construct();
+    	parent::__construct();
 
 
-    // settings
 		$this->settings = array(
 			'path' => apply_filters('acf/helpers/get_path', __FILE__),
 			'dir' => apply_filters('acf/helpers/get_dir', __FILE__),
@@ -42,55 +57,57 @@ class acf_field_sidebar_selector extends acf_field
 	}
 
 
-	/*
-	*  create_options()
-	*
-	*  Create extra options for your field. This is rendered when editing a field.
-	*  The value of $field['name'] can be used (like bellow) to save extra data to the $field
-	*
-	*  @type	action
-	*  @since	3.6
-	*  @date	23/01/13
-	*
-	*  @param	$field	- an array holding all the field's data
-	*/
-
-	function create_options($field)
-	{
+	/**
+	 * Field Options
+	 *
+	 * Creates the options for the field, they are shown when the user
+	 * creates a field in the back-end. Currently there are two fields.
+	 *
+	 * Allowing null determines if the user is allowed to select no sidebars
+	 *
+	 * The default value can set the dropdown to a pre-set value when loaded
+	 *
+	 * @param array $field The details of this field
+	 * @author Daniel Pataki
+	 * @since 3.0.0
+	 *
+	 */
+	function create_options($field) {
 
 		$field = array_merge($this->defaults, $field);
 		$key = $field['name'];
 
 
-		// Create Field Options HTML
 		?>
-<tr class="field_option field_option_<?php echo $this->name; ?>">
-	<td class="label">
-		<label><?php _e("Allow Null", 'acf'); ?></label>
-	</td>
-	<td>
-		<?php
+		<!-- Allow Null Field -->
+		<tr class="field_option field_option_<?php echo $this->name; ?>">
+			<td class="label">
+				<label><?php _e("Allow Null", 'acf'); ?></label>
+			</td>
+			<td>
+			<?php
+			do_action('acf/create_field', array(
+				'type'    =>  'radio',
+				'name'    =>  'fields[' . $key . '][allow_null]',
+				'value'   =>  $field['allow_null'],
+				'layout'  =>  'horizontal',
+				'choices' =>  array(
+					'1' => __('Yes', 'acf'),
+					'0' => __('No', 'acf'),
+				)
+			));
 
-		do_action('acf/create_field', array(
-			'type'    =>  'radio',
-			'name'    =>  'fields[' . $key . '][allow_null]',
-			'value'   =>  $field['allow_null'],
-			'layout'  =>  'horizontal',
-			'choices' =>  array(
-				'1' => __('Yes', 'acf'),
-				'0' => __('No', 'acf'),
-			)
-		));
+			?>
+		</td>
+	</tr>
 
-		?>
-	</td>
-</tr>
+	<!-- Default Value Field -->
 
-<tr class="field_option field_option_<?php echo $this->name; ?>">
-	<td class="label">
-		<label><?php _e("Default Value", 'acf'); ?></label>
-	</td>
-	<td>
+	<tr class="field_option field_option_<?php echo $this->name; ?>">
+		<td class="label">
+			<label><?php _e("Default Value", 'acf'); ?></label>
+		</td>
+		<td>
 		<?php
 
 		do_action('acf/create_field', array(
@@ -100,32 +117,29 @@ class acf_field_sidebar_selector extends acf_field
 		));
 
 		?>
-	</td>
-</tr>
+		</td>
+	</tr>
 
 		<?php
 
 	}
 
 
-	/*
-	*  create_field()
-	*
-	*  Create the HTML interface for your field
-	*
-	*  @param	$field - an array holding all the field's data
-	*
-	*  @type	action
-	*  @since	3.6
-	*  @date	23/01/13
-	*/
-
-	function create_field( $field )
-	{
+	/**
+	 * Field Display
+	 *
+	 * This function takes care of displaying our field to the users, taking
+	 * the field options into account.
+	 *
+	 * @param array $field The details of this field
+	 * @author Daniel Pataki
+	 * @since 3.0.0
+	 *
+	 */
+	function create_field( $field ) {
 
 		global $wp_registered_sidebars;
 
-		// create Field HTML
 		?>
 		<div>
 			<select name='<?php echo $field['name'] ?>'>
